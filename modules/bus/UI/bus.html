@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Data</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+    <script src="/eel.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Filter Data</h1>
+    </header>
+
+    <div class="filter-container">
+        <!-- Dropdown Selectors -->
+        <div class="filter-item">
+            <label for="classSelector">Class:</label>
+            <select id="classSelector">
+                <option value="def">All</option>
+                <option value="xi">XI</option>
+                <option value="xii">XII</option>
+            </select>
+        </div>
+
+        <div class="filter-item">
+            <label for="routeSelector">Route:</label>
+            <select id="routeSelector">
+                <option value="def">All</option>
+                <option value="b1">b1</option>
+                <option value="b2">b2</option>
+                <option value="b3">b3</option>
+                <option value="a">a</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+            </select>
+        </div>
+
+        <div class="filter-item">
+            <label for="busStopSelector">Bus Stop:</label>
+            <select id="busStopSelector">
+                <option value="def">All</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Result Display -->
+    <div class="result-container">
+        <h2>Filtered Names:</h2>
+        <ul id="filteredNames"></ul>
+    </div>
+
+    <!-- Button to Trigger Filtering -->
+    <button id="filterButton">Filter Data</button>
+
+    <script>
+        // JavaScript to handle the user interface
+        const classSelector = document.getElementById('classSelector');
+        const routeSelector = document.getElementById('routeSelector');
+        const busStopSelector = document.getElementById('busStopSelector');
+        const filteredNamesList = document.getElementById('filteredNames');
+        const filterButton = document.getElementById('filterButton');
+
+        // Define a JavaScript object to map bus routes to bus stops
+        const busStopsByRoute = {
+            b1: ["skb", "saravana stores"],
+            b2: ["anugraha"],
+            b3: ["vels hotel", "post office"],
+            b: ["marapalam", "ig square"],
+            c: ["pothys", "marapalam", "thavalakuppam"],
+            a: ["raak college", "kirumampakkam"],
+        };
+
+        // Function to update bus stops based on the selected route
+        function updateBusStops() {
+            const selectedRoute = routeSelector.value;
+            const busStops = busStopsByRoute[selectedRoute] || [];
+
+            // Clear previous options
+            busStopSelector.innerHTML = '';
+
+            // Add new options
+            busStops.forEach(busStop => {
+                const option = document.createElement('option');
+                option.value = busStop;
+                option.textContent = busStop;
+                busStopSelector.appendChild(option);
+            });
+        }
+
+        // Add change event listener to the route dropdown to update bus stops
+        routeSelector.addEventListener('change', updateBusStops);
+
+        async function filterData() {
+    const selectedClass = classSelector.value;
+    const selectedRoute = routeSelector.value;
+    const selectedBusStop = busStopSelector.value;
+
+    // Call the Python function with selected criteria
+    await eel.get_by_class(selectedClass, selectedRoute, selectedBusStop)();
+
+    // Get the req_name_list from the Python function's response
+    const req_name_list = await eel.get_req_name_list()();
+
+    // Update the HTML with the filtered names
+    filteredNamesList.innerHTML = ''; // Clear previous content
+
+    // Iterate through req_name_list and add each name as a list item
+    req_name_list.forEach(name => {
+        const listItem = document.createElement('li');
+        listItem.textContent = name;
+        filteredNamesList.appendChild(listItem);
+    });
+}
+
+// Add click event listener to the filter button
+filterButton.addEventListener('click', filterData);
+
+
+        // Initialize bus stops based on the initial route selection
+        updateBusStops();
+    </script>
+</body>
+</html>
