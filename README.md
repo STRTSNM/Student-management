@@ -10,3 +10,6 @@ Yet another student management system
   - Attendence
   - Fee management
   - Time table allocation
+
+## Screenshot:
+![screenshot](screenshot.png)
