@@ -1,41 +1,51 @@
-import csv
+from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory
+import time
 
-req_name_list = []  # Will be edited according to usage
-name_list = []  # Contains all names
-
-# Adding all names to name_list
-with open('list.csv', 'r') as k:
-    kc = csv.reader(k)
-    for row in kc:
-        if row:  # Check if the row is not empty
-            name_list.append(row[0])
-
-print("Name list: ", name_list)
-
-#'def' is assigned to any of class,route or bus stop if it is not to be used. This is for future use.
-
-def get_by_class(classs='def', route='def', bus_stop='def'):
-    global req_name_list
-
-    temp_name_list = []
-    with open('list.csv', 'r') as f:
-        fc = csv.reader(f)
-        i = 0
-
-        for row in fc:
-            if row:  # Check if the row is not empty
-                # Check all three criteria: classs, route, and bus_stop
-                if (
-                    (classs == 'def' or classs == row[1]) and
-                    (route == 'def' or route == row[2]) and
-                    (bus_stop == 'def' or bus_stop == row[3])
-                ):
-                    temp_name_list.append(i)
-                i += 1
-
-    req_name_list = [name_list[ind] for ind in temp_name_list]
+app = Flask(__name__)
+app.secret_key = 'your_secret_key'
 
 
-# Example usage with all criteria specified
-get_by_class("xii", 'def', 'vels hotel')
-print(req_name_list)
+@app.route('/loading')
+def loading():
+    return render_template('loading.html')
+
+# Simulated user database (replace with your own authentication system)
+users = {'user1': 'password1', 'user2': 'password2'}
+
+
+
+# Login route
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    if 1==1:
+        return render_template('loading.html')
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        # Check if the provided username and password are correct
+        if username in users and users[username] == password:
+            session['username'] = username
+            return redirect(url_for('dashboard'))
+        else:
+            error = 'Invalid username or password'
+            return render_template('login.html', error=error)
+
+    return render_template('login.html')
+
+# Dashboard route (protected route)
+@app.route('/dashboard')
+def dashboard():
+    if 'username' in session:
+        username = session['username']
+        return f'Welcome to the dashboard, {username}! <a href="/logout">Logout</a>'
+    return redirect(url_for('login'))
+
+# Logout route
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('login'))
+
+if __name__ == '__main__':
+    app.run(debug=True)
