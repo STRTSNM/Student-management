@@ -5,7 +5,7 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 
-users = {'user1': 'password1', 'user2': 'password2'}
+users = {'user1': 'password1', 'user2': 'password2'} #To be changed
 
 @app.route('/')
 def loading():
