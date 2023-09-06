@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // Add a delay of 2 seconds before redirecting to the login page
+        setTimeout(function () {
+            window.location.href = "/login";
+        }, 2000); // 2000 milliseconds (2 seconds)
+    </script>
+</head>
+<body>
+    <img src="{{ url_for('static', filename='your_loading.gif') }}" alt="Loading...">
+</body>
+</html>
